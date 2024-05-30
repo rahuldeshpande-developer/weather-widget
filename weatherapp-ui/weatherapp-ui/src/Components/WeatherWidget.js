@@ -20,10 +20,19 @@ export default function WeatherWidget(){
         {            
             setTimeout(async function(){
                 try {
-                    let response = await fetch(url);
-                    let jsonData = await response.json();
-                    if(response.ok){
-                        resolve(jsonData)    
+                    const response = await fetch(url);
+                    const jsonData = await response.json();
+                    if(response.ok && !Object.hasOwn(jsonData, "error")){                        
+                        const imageUrlRequest = `/image/${city}`;
+                        try{
+                            const imageUrlResponse = await fetch(imageUrlRequest);
+                            const imageUrl = await imageUrlResponse.text();
+                            Object.defineProperty(jsonData, "imageUrl", {value: imageUrl,  writable: false});
+                            resolve(jsonData)
+                        }
+                        catch(err){
+                            reject(err)
+                        }
                     }
                     else{
                         let error = new Error("")
@@ -33,7 +42,7 @@ export default function WeatherWidget(){
                   } catch(err) {
                     reject(err)
                   }
-            }, 2000)            
+            }, 20)            
         })
     }
 
@@ -52,7 +61,7 @@ export default function WeatherWidget(){
             setFavorites(current => {
                 return [
                     ...current,
-                    activeWeatherData
+                    Object.assign({}, activeWeatherData)
                 ]
             })    
         }
@@ -84,18 +93,17 @@ export default function WeatherWidget(){
     useEffect(() => {
         setTimeout(function(){
             let allPromises = [];
-            if(Object.keys(activeWeatherData) != 0){
-                allPromises.concat(fetchWeatherData(activeWeatherData["location"]["name"])
-                .then(function(jsonData){
-                    setActiveWeatherData(jsonData)
-                }))
-            }
             const favPromises = favorites.map((weatherData, index) => {
                 return fetchWeatherData(weatherData["location"]["name"])
                 .then(function(jsonData){
                     setFavorites(previous => {
                         const allData = [...previous];
-                        allData[index] = jsonData;
+                        if(!Object.hasOwn(jsonData, "lastUpdated")){
+                            Object.defineProperty(jsonData, "lastUpdated", {value: 0, writable: true});
+                        }
+                        jsonData.lastUpdated = Date.now();
+                        console.log(jsonData);
+                        allData[index] = jsonData;                        
                         return allData;
                     })
                 })
@@ -119,7 +127,7 @@ export default function WeatherWidget(){
                     loadState = {loadState}
                     error = {error}
                 />
-                <button onClick={handleAddFavorite}>Add to favorites</button>
+                <button onClick={handleAddFavorite} disabled = {Object.keys(activeWeatherData) == 0}>Add to favorites</button>
                 <div className="container content favcardcontainer">
                 {
                     favorites.map(function(favorite, index){
