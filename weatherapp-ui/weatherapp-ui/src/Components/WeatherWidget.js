@@ -22,12 +22,12 @@ export default function WeatherWidget(){
                 try {
                     const response = await fetch(url);
                     const jsonData = await response.json();
-                    if(response.ok){                        
+                    if(response.ok && !Object.hasOwn(jsonData, "error")){                        
                         const imageUrlRequest = `/image/${city}`;
                         try{
                             const imageUrlResponse = await fetch(imageUrlRequest);
                             const imageUrl = await imageUrlResponse.text();
-                            Object.defineProperty(jsonData, "imageUrl", {value: imageUrl});
+                            Object.defineProperty(jsonData, "imageUrl", {value: imageUrl,  writable: false});
                             resolve(jsonData)
                         }
                         catch(err){
@@ -98,7 +98,12 @@ export default function WeatherWidget(){
                 .then(function(jsonData){
                     setFavorites(previous => {
                         const allData = [...previous];
-                        allData[index] = jsonData;
+                        if(!Object.hasOwn(jsonData, "lastUpdated")){
+                            Object.defineProperty(jsonData, "lastUpdated", {value: 0, writable: true});
+                        }
+                        jsonData.lastUpdated = Date.now();
+                        console.log(jsonData);
+                        allData[index] = jsonData;                        
                         return allData;
                     })
                 })
@@ -122,7 +127,7 @@ export default function WeatherWidget(){
                     loadState = {loadState}
                     error = {error}
                 />
-                <button onClick={handleAddFavorite}>Add to favorites</button>
+                <button onClick={handleAddFavorite} disabled = {Object.keys(activeWeatherData) == 0}>Add to favorites</button>
                 <div className="container content favcardcontainer">
                 {
                     favorites.map(function(favorite, index){

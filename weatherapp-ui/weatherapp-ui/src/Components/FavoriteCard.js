@@ -10,6 +10,7 @@ export default function FavoriteCard(props){
             <div className="card-body">
                 <h5 className="card-title">{props.weatherData["location"]["name"]}</h5>
                 <p className="card-text">The temperature is: {props.weatherData["current"]["temp_c"]}°C, Humidity is {props.weatherData["current"]["humidity"]} %</p>
+                <p className="time-stamp">last update: {props.weatherData.lastUpdated}</p>
                 <button className="btn btn-primary" onClick={handleClick}>Set Active</button>
             </div>
             </div>
