@@ -52,7 +52,7 @@ export default function WeatherWidget(){
             setFavorites(current => {
                 return [
                     ...current,
-                    activeWeatherData
+                    Object.assign({}, activeWeatherData)
                 ]
             })    
         }
@@ -84,12 +84,6 @@ export default function WeatherWidget(){
     useEffect(() => {
         setTimeout(function(){
             let allPromises = [];
-            if(Object.keys(activeWeatherData) != 0){
-                allPromises.concat(fetchWeatherData(activeWeatherData["location"]["name"])
-                .then(function(jsonData){
-                    setActiveWeatherData(jsonData)
-                }))
-            }
             const favPromises = favorites.map((weatherData, index) => {
                 return fetchWeatherData(weatherData["location"]["name"])
                 .then(function(jsonData){
