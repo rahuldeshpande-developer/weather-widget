@@ -3,7 +3,7 @@ const config = require('./config');
 var cors = require('cors')
 const app = express();
 app.options('*', cors())
-const port = process.env.PORT || 3000;
+const port = 3000 || process.env.PORT;
 
 app.get('/:city', async (req, res) => {
     const url = `http://api.weatherapi.com/v1/current.json?key=${config.API_KEY}&q=${req.params.city}&aqi=no`;
