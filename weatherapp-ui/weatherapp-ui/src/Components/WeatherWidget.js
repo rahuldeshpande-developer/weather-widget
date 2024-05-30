@@ -20,10 +20,19 @@ export default function WeatherWidget(){
         {            
             setTimeout(async function(){
                 try {
-                    let response = await fetch(url);
-                    let jsonData = await response.json();
-                    if(response.ok){
-                        resolve(jsonData)    
+                    const response = await fetch(url);
+                    const jsonData = await response.json();
+                    if(response.ok){                        
+                        const imageUrlRequest = `/image/${city}`;
+                        try{
+                            const imageUrlResponse = await fetch(imageUrlRequest);
+                            const imageUrl = await imageUrlResponse.text();
+                            Object.defineProperty(jsonData, "imageUrl", {value: imageUrl});
+                            resolve(jsonData)
+                        }
+                        catch(err){
+                            reject(err)
+                        }
                     }
                     else{
                         let error = new Error("")
@@ -33,7 +42,7 @@ export default function WeatherWidget(){
                   } catch(err) {
                     reject(err)
                   }
-            }, 2000)            
+            }, 20)            
         })
     }
 

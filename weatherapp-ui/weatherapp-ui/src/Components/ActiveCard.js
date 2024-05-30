@@ -8,7 +8,8 @@ export default function ActiveCard(props){
             
             props.loadState == LoadState.Successful ? 
             (
-                <div className="container content">                        
+                <div className="container content">   
+                <img className="activecard-image" src= {props.weatherData["imageUrl"]} />                     
                     <h4>
                     {activeWeatherData["location"]["name"]}, {activeWeatherData["location"]["region"]}, {activeWeatherData["location"]["country"]} 
                     </h4>

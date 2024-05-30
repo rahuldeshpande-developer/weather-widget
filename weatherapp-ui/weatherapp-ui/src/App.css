@@ -33,3 +33,8 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+.activecard-image {
+  max-width: 500px;
+  margin-bottom: 10px;
+}
