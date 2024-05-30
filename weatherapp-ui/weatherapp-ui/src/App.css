@@ -1,0 +1,35 @@
+
+
+.weather-div {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.weather-widget-title {
+  text-align: center;
+  margin: 20px;
+}
+
+.content {
+  margin-top:25px;
+  padding-left: 0px;
+}
+
+.weather-icon {
+  height: 50;
+  width: 50px;
+}
+
+.btn, button {
+  margin-top: 10px;
+}
+
+.favcard {
+  margin: 10px;
+  box-shadow: 0px 10px 8px gray;
+}
+
+.favcardcontainer {
+  display: flex;
+  flex-wrap: wrap;
+}
